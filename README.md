@@ -1,1 +1,0 @@
-# Aplicaciones Web 1 (2-2026)
