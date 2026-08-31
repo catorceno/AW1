@@ -9,3 +9,6 @@ Comprobar acceso al servidor ec2:
 - Navegador a `http://13.222.125.97:8000/` → no rechazó, quedó esperando y expiró por tiempo (`ERR_CONNECTION_TIMED_OUT`). Esto es distinto al caso anterior: acá el paquete probablemente ni siquiera llegó a la instancia, lo que apunta a que el grupo de seguridad de EC2 está bloqueando el puerto 8000 desde afuera.
 
 Por un lado, Flask escucha solo en `127.0.0.1` (loopback), no en todas las interfaces de la máquina, así que ni siquiera la IP privada responde desde otra sesión. Por otro lado, el grupo de seguridad de EC2 no tiene abierto el puerto 8000 hacia el exterior, así que aunque corrigiera el punto 1, el navegador seguiría sin poder llegar desde internet.
+
+### 5.3 Diagnóstico
+`0.0.0.0` le dice al proceso que escuche en todas las interfaces de red que tenga esta máquina (ya sea la de loopback, la privada o cualquier otra). Si en cambio pusieras literalmente `172.31.27.1` (IP privada), el proceso quedaría atado únicamente a esa interfaz específica, y dejaría de responder por loopback, por ejemplo. Además esa IP privada es asignada por DHCP y puede cambiar si la instancia se reinicia — atarse a un valor fijo es frágil. `0.0.0.0` es la forma correcta y portable de que todas las interfaces estén disponibles.
