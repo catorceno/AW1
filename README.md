@@ -12,3 +12,16 @@ Por un lado, Flask escucha solo en `127.0.0.1` (loopback), no en todas las inter
 
 ### 5.3 Diagnóstico
 `0.0.0.0` le dice al proceso que escuche en todas las interfaces de red que tenga esta máquina (ya sea la de loopback, la privada o cualquier otra). Si en cambio pusieras literalmente `172.31.27.1` (IP privada), el proceso quedaría atado únicamente a esa interfaz específica, y dejaría de responder por loopback, por ejemplo. Además esa IP privada es asignada por DHCP y puede cambiar si la instancia se reinicia — atarse a un valor fijo es frágil. `0.0.0.0` es la forma correcta y portable de que todas las interfaces estén disponibles.
+
+### 7.2 El Dockerfile
+**1. ¿Qué copia exactamente COPY ./site/?**
+
+Copia todo el contenido del directorio actual (`.`) al directorio site (`/site/`) con excepción de lo incluido en `.dockerignore`.
+
+**2. ¿Qué pasaría si tuviera un .pem en el directorio?**
+
+En el archivo `.dockerignore` está incluido el tipo de archivo `*.pem`, por lo tanto si hay un archivo `.pem` este no se incluirá en la construcción de la imagen.
+
+**3. El Dockerfile declara EXPOSE 5001 pero la aplicación escucha en el 8000: ¿cuál de los dos manda?**
+
+`EXPOSE` es solo documentación, no publica ni redirige ningún puerto, lo que conecta el host con el contenedor es el `-p` en el comando `docker run`.
