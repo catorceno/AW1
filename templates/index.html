@@ -1,0 +1,39 @@
+<!-- html template de flask, lo mismo con django -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portfolio</title>
+  <link rel="stylesheet" href="./static/index.css" />
+</head>
+<body>
+  <header>
+    <nav>
+      <ul>
+        <li><a href="#hero">inicio</a></li>
+        <li><a href="#projects">proyectos</a></li>
+        <li><a href="#contact">contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <!--hero-->
+    <section>
+      <h1>hi, my name is {{ name }}</h1>
+    </section>
+
+    <!--projects-->
+    <section>
+      <article>project 1</article>
+      <article>project 2</article>
+    </section>
+  
+    <!--contact-->
+    <section>contact</section>
+  </main>
+  
+  <footer>ISW-233: Aplicaciones Web I, Gestión II/2026</footer>
+</body>
+</html>
