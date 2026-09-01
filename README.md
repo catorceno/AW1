@@ -2,7 +2,7 @@
 
 ### 5.2 Comprobar
 Comprobar acceso al servidor ec2:
-![Hello World Prueba](hello-world-prueba.png)
+![Hello World Prueba](images/hello-world-prueba.png)
 
 - `curl http://127.0.0.1:8000/` (dentro del servidor) → respondió `Hello World!` sin problema.
 - `curl http://172.31.27.1:8000/` (IP privada, desde otra sesión SSH) → rechazo inmediato (`Could not connect to server`, 0 ms). El paquete llegó a la máquina, pero como el proceso no escucha en esa interfaz, nadie lo atendió.
@@ -25,3 +25,7 @@ En el archivo `.dockerignore` está incluido el tipo de archivo `*.pem`, por lo 
 **3. El Dockerfile declara EXPOSE 5001 pero la aplicación escucha en el 8000: ¿cuál de los dos manda?**
 
 `EXPOSE` es solo documentación, no publica ni redirige ningún puerto, lo que conecta el host con el contenedor es el `-p` en el comando `docker run`.
+
+### 7.3 Construir y ejecutar
+Apertura de puertos y flujo del tráfico
+![host-ec2](images/puertos-host-ec2.drawio.png)

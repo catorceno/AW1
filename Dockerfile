@@ -6,6 +6,6 @@ RUN pip3 install flask
 
 COPY . /site/
 
-EXPOSE 5001
+EXPOSE 5000
 
 CMD ["python3", "/site/app.py"]
