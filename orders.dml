@@ -1,0 +1,65 @@
+
+-- 4. customers
+-- ---------------------------------------------------------------------
+INSERT INTO content.customers (first_name, last_name, email, creation_date)
+SELECT
+    first_names[1 + (i % array_length(first_names, 1))],
+    CASE WHEN i % 10 = 0 THEN NULL   -- ~10% de clientes sin apellido registrado
+         ELSE last_names[1 + ((i * 7 + 3) % array_length(last_names, 1))]
+    END,
+    'cliente.' || i || '@example.com',   -- garantiza email único (uq_customers_email)
+    now() - (random() * interval '730 days')
+FROM generate_series(1, 5000) AS i
+CROSS JOIN (VALUES (ARRAY[
+    'Ana','Carlos','María','Luis','Camila','Diego','Valentina','Jorge','Sofía','Miguel',
+    'Lucía','Andrés','Paola','Fernando','Gabriela','Ricardo','Daniela','Sergio','Patricia','Iván'
+])) AS fn(first_names)
+CROSS JOIN (VALUES (ARRAY[
+    'Pérez','Gómez','Rodríguez','Fernández','López','Martínez','Sánchez','Díaz','Torres','Flores',
+    'Vargas','Castro','Rojas','Mendoza','Suárez','Romero','Aguilar','Silva','Cruz','Ortiz'
+])) AS ln(last_names);
+
+-- 5. orders
+-- ---------------------------------------------------------------------
+-- total se deja NULL a propósito: se calcula al final sumando order_items.subtotal,
+-- igual que pasaría en la app real cuando se arma un pedido.
+INSERT INTO content.orders (customer_id, status, creation_date)
+SELECT
+    c.customer_id,
+    (ARRAY['preparing', 'served', 'paid'])[1 + floor(random() * 3)::int],
+    now() - (random() * interval '365 days')
+FROM generate_series(1, 20000) AS i
+CROSS JOIN LATERAL (
+    SELECT customer_id
+    FROM content.customers
+    ORDER BY random()
+    LIMIT 1
+) AS c;
+
+-- 6. order_items
+-- ---------------------------------------------------------------------
+INSERT INTO content.order_items (order_id, menu_item_price_id, quantity, unit_price, creation_date)
+SELECT
+    o.order_id,
+    mip.menu_item_price_id,
+    (1 + floor(random() * 3))::int,   -- cantidad entre 1 y 3
+    mip.price,
+    o.creation_date + (random() * interval '5 minutes')
+FROM content.orders o
+CROSS JOIN LATERAL generate_series(1, (1 + floor(random() * 4))::int) AS item_num
+CROSS JOIN LATERAL (
+    SELECT menu_item_price_id, price
+    FROM content.menu_item_prices
+    ORDER BY random()
+    LIMIT 1
+) AS mip;
+
+-- Recalcula el total de cada orden en base a sus líneas.
+UPDATE content.orders o
+SET total = sub.total
+FROM (
+    SELECT order_id, sum(subtotal) AS total
+    FROM content.order_items
+    GROUP BY order_id
+) AS sub
+WHERE o.order_id = sub.order_id;

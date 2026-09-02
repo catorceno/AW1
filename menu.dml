@@ -1,0 +1,153 @@
+
+-- 1. menu_categories
+-- ---------------------------------------------------------------------
+INSERT INTO content.menu_categories (name) VALUES
+    ('café'),
+    ('cafés especiales'),
+    ('bebidas'),
+    ('smoothies'),
+    ('batidos'),
+    ('helados'),
+    ('desayunos salados'),
+    ('desayunos dulces'),
+    ('pastelería dulce'),
+    ('pastelería salada'),
+    ('pastelería entera'),
+    ('sándwiches'),
+    ('ensaladas'),
+    ('envueltos y piqueos'),
+    ('especialidades mexicanas'),
+    ('bar');
+
+-- 2. menu_items
+-- ---------------------------------------------------------------------
+INSERT INTO content.menu_items (menu_category_id, name, description)
+SELECT mc.menu_category_id, v.name, v.description
+FROM (VALUES
+    -- CAFÉ
+    ('café', 'espresso', NULL),
+    ('café', 'café descafeinado', NULL),
+    ('café', 'cortado', 'Espresso y espuma de leche.'),
+    ('café', 'cappuccino', 'Espresso, leche caliente, espuma de leche y canela.'),
+    ('café', 'café destilado', NULL),
+    ('café', 'chocolate caliente', NULL),
+    ('café', 'café con leche', NULL),
+    ('café', 'crema de leche batida o esencia', NULL),
+    ('café', 'té gourmet metropolitan', NULL),
+    ('café', 'té o mate', NULL),
+
+    -- CAFÉS ESPECIALES
+    ('cafés especiales', 'café latte', 'Espresso, esencia a escoger, leche batida, crema de leche batida y chocolate raspado.'),
+    ('cafés especiales', 'cappuccino con esencias', 'Espresso, leche caliente, espuma de leche, canela con esencia.'),
+    ('cafés especiales', 'café mocha', 'Espresso, chocolate, leche batida, crema de leche batida y chocolate raspado.'),
+    ('cafés especiales', 'café bombón', 'Espresso con leche condensada.'),
+    ('cafés especiales', 'latte frío', 'Espresso con leche, hielo y esencia.'),
+    ('cafés especiales', 'café irlandés', 'Espresso con whisky, azúcar & crema de leche batida.'),
+    ('cafés especiales', 'café amaretto', 'Café con amaretto & crema de leche batida.'),
+    ('cafés especiales', 'iced cold brew hazelnut macchiato', 'Nuestro Cold Brew con Macchiato con esencia a escoger.'),
+    ('cafés especiales', 'iced cold brew vanilla macchiato', 'Nuestro Cold Brew con Macchiato con esencia a escoger.'),
+    ('cafés especiales', 'iced cold brew caramel macchiato', 'Nuestro Cold Brew con Macchiato con esencia a escoger.'),
+    ('cafés especiales', 'iced cold brew mocha con chocolate casero', 'Nuestro Cold Brew con Mocha en deliciosa versión de chocolate casero.'),
+    ('cafés especiales', 'cold brew americano', 'Café extraído a partir de infusión en agua fría.'),
+    ('cafés especiales', 'cold brew con agua tónica', 'Nuestro Cold Brew con agua tónica.'),
+    ('cafés especiales', 'iced latte cold brew', 'Nuestro Cold Brew con Latte con esencia a escoger.'),
+
+    -- BEBIDAS
+    ('bebidas', 'agua natural', 'con o sin gas'),
+    ('bebidas', 'jugo de la estación con agua', NULL),
+    ('bebidas', 'jugo de la estación con leche', NULL),
+    ('bebidas', 'limonada con frutilla', NULL),
+    ('bebidas', 'limonada con hierba buena', NULL),
+    ('bebidas', 'limonada con menta', NULL),
+    ('bebidas', 'piña buena', NULL),
+    ('bebidas', 'zumo', NULL),
+    ('bebidas', 'té helado', 'Té, azúcar, hielo, acompañado con hierba buena y limón.'),
+    ('bebidas', 'gaseosa', NULL),
+    ('bebidas', 'gaseosa dietética', NULL),
+
+    -- SMOOTHIES
+    ('smoothies', 'smoothie de kiwi con plátano', 'Batido frío de kiwi y plátano con helado.'),
+    ('smoothies', 'smoothie de frutos rojos y piña', 'Batido frío de frutos rojos y piña con helado.'),
+    ('smoothies', 'smoothie de frambuesa con durazno', 'Batido frío de frambuesa y durazno con helado.'),
+    ('smoothies', 'té gourmet frappeado', 'Hielo picado con té gourmet a elección con azúcar o edulcorante.'),
+
+    -- BATIDOS
+    ('batidos', 'frappé', 'Hielo picado con frutas frescas de la estación y azúcar o edulcorante.'),
+    ('batidos', 'coffee shake', 'Batido de espresso, con esencias y crema de leche batida.'),
+    ('batidos', 'cappuccino frappeado', 'Espresso, leche y hielo batido.'),
+    ('batidos', 'frushake', 'Batido frío de frutas frescas de la estación y yogurt.'),
+    ('batidos', 'cappuccino frappeado light', 'Espresso, leche de soya, hielo batido y edulcorante.')
+) AS v(category_name, name, description)
+JOIN content.menu_categories mc ON mc.name = v.category_name;
+
+-- 3. menu_item_prices
+-- ---------------------------------------------------------------------
+INSERT INTO content.menu_item_prices (menu_item_id, name, price)
+SELECT mi.menu_item_id, v.price_name, v.price
+FROM (VALUES
+    -- CAFÉ
+    ('espresso', 'simple', 13),
+    ('espresso', 'doble', 18),
+    ('café descafeinado', 'simple', 17),
+    ('café descafeinado', 'doble', 22),
+    ('cortado', 'simple', 14),
+    ('cortado', 'doble', 19),
+    ('cappuccino', 'simple', 20),
+    ('cappuccino', 'doble', 28),
+    ('café destilado', 'simple', 16),
+    ('café destilado', 'doble', 19),
+    ('chocolate caliente', 'simple', 28),
+    ('chocolate caliente', 'doble', 40),
+    ('café con leche', 'simple', 18),
+    ('café con leche', 'doble', 24),
+    ('crema de leche batida o esencia', 'único', 8),
+    ('té gourmet metropolitan', 'simple', 15),
+    ('té gourmet metropolitan', 'doble', 20),
+    ('té o mate', 'simple', 10),
+    ('té o mate', 'doble', 12),
+
+    -- CAFÉS ESPECIALES
+    ('café latte', 'único', 29),
+    ('cappuccino con esencias', 'simple', 24),
+    ('cappuccino con esencias', 'doble', 31),
+    ('café mocha', 'único', 33),
+    ('café bombón', 'simple', 15),
+    ('café bombón', 'doble', 20),
+    ('latte frío', 'único', 29),
+    ('café irlandés', 'único', 39),
+    ('café amaretto', 'único', 39),
+    ('iced cold brew hazelnut macchiato', 'único', 27),
+    ('iced cold brew vanilla macchiato', 'único', 27),
+    ('iced cold brew caramel macchiato', 'único', 27),
+    ('iced cold brew mocha con chocolate casero', 'único', 25),
+    ('cold brew americano', 'único', 13),
+    ('cold brew con agua tónica', 'único', 13),
+    ('iced latte cold brew', 'único', 25),
+
+    -- BEBIDAS
+    ('agua natural', 'único', 13),
+    ('jugo de la estación con agua', 'único', 19),
+    ('jugo de la estación con leche', 'único', 21),
+    ('limonada con frutilla', 'único', 20),
+    ('limonada con hierba buena', 'único', 20),
+    ('limonada con menta', 'único', 20),
+    ('piña buena', 'único', 20),
+    ('zumo', 'único', 21),
+    ('té helado', 'único', 13),
+    ('gaseosa', 'único', 15),
+    ('gaseosa dietética', 'único', 15),
+
+    -- SMOOTHIES
+    ('smoothie de kiwi con plátano', 'único', 40),
+    ('smoothie de frutos rojos y piña', 'único', 40),
+    ('smoothie de frambuesa con durazno', 'único', 40),
+    ('té gourmet frappeado', 'único', 23),
+
+    -- BATIDOS
+    ('frappé', 'único', 23),
+    ('coffee shake', 'único', 30),
+    ('cappuccino frappeado', 'único', 23),
+    ('frushake', 'único', 24),
+    ('cappuccino frappeado light', 'único', 23)
+) AS v(item_name, price_name, price)
+JOIN content.menu_items mi ON mi.name = v.item_name;
