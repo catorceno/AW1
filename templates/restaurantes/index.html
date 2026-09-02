@@ -1,0 +1,49 @@
+{% extends 'layout.html' %}
+
+{% block titulo %}Restaurantes &middot; La Carta{% endblock %}
+
+{% block contenido %}
+    <h1>Restaurantes</h1>
+
+    <!-- ¿por qué se coloca acá de vuelta listar_restaurantes ?-->
+    <form method="get" action="{{ url_for('listar_restaurantes') }}" class="formulario-filtro">
+        <input type="text" name="ciudad" placeholder="Filtrar por ciudad" value="{{ ciudad_filtro }}">
+        <button type="submit">Filtrar</button>
+        {% if ciudad_filtro %}
+            <a href="{{ url_for('listar_restaurantes') }}" class="enlace-quitar">Quitar filtro</a>
+        {% endif %}
+    </form>
+
+    <!-- ¿se refiere a los restaurantes que pasamos por parámetro en el return en app.py? -->
+    {% if restaurantes %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Ciudad</th>
+                    <th>Platos</th>
+                    <th></th> <!-- ¿para el Ver detalle? -->
+                </tr>
+            </thead>
+            <tbody>
+                {% for restaurante in restaurantes %}
+                    <tr>
+                        <td>{{ restaurante.nombre }}</td>
+                        <td>{{ restaurante.ciudad }}</td>
+                        <td>{{ restaurante.platos|length }}</td>
+                        <td>
+                            <a>Ver detalle</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p class="vacio">
+            No hay restaurantes registrados
+            {% if ciudad_filtro %} 
+                en &ldquo;{{ ciudad_filtro }}&rdquo; 
+            {% endif %}
+        </p>
+    {% endif %}
+{% endblock %}
