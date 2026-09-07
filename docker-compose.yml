@@ -1,0 +1,26 @@
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: lacarta
+      POSTGRES_USER: lacarta
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - datos_pg:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U lacarta"]
+      interval: 5s
+      retries: 10
+  web:
+    build: .
+    ports:
+      - "1028:1028"
+    environment:
+      DATABASE_URL: postgresql://lacarta:${POSTGRES_PASSWORD}@db:5432/lacarta
+      SECRET_KEY: ${SECRET_KEY}
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  datos_pg:

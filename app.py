@@ -1,6 +1,6 @@
 import os # ¿qué hace os? ¿para qué sirve os?
-from flask import Flask, jsonfy, abort, request, render_template, redirect, url_for
-from flask_sqlachemy import SQLAlchemy
+from flask import Flask, jsonify, abort, request, render_template, redirect, url_for
+from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
@@ -10,7 +10,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False # ¿qué hace esto?
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'cambia-esta-clave-en-produccion') # ¿qué hace esto?
 
-db = SQLAchemy(app) # ¿qué es exactamente db?¿por qué todo se accede mediante este?
+db = SQLAlchemy(app) # ¿qué es exactamente db?¿por qué todo se accede mediante este?
 
 # MODELOS
 # --------------------------------------------------
