@@ -1,6 +1,6 @@
 
 INSERT INTO restaurantes (nombre, ciudad, direccion, telefono)
-VALUE ('La Parrila del Che', 'Santa Cruz de la Sierra', 'Av. Perimetral 570', '77999914');
+VALUES ('La Parrila del Che', 'Santa Cruz de la Sierra', 'Av. Perimetral 570', '77999914');
 
 INSERT INTO platos (nombre, precio, restaurante_id)
 VALUES
