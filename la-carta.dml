@@ -4,6 +4,6 @@ VALUES ('La Parrila del Che', 'Santa Cruz de la Sierra', 'Av. Perimetral 570', '
 
 INSERT INTO platos (nombre, precio, restaurante_id)
 VALUES
-    ('Milanesa a la napolitana', 45.00, (SELECT id FROM restaurantes WHERE nombre = 'La Parrilla del Che')),
-    ('Bife de chorizo', 65.50, (SELECT id FROM restaurantes WHERE nombre = 'La Parrilla del Che')),
-    ('Ensalada mixta', 20.00, (SELECT id FROM restaurantes WHERE nombre = 'La Parrilla del Che'));
+    ('Milanesa a la napolitana', 45.00, TRUE, (SELECT id FROM restaurantes WHERE nombre = 'La Parrilla del Che')),
+    ('Bife de chorizo', 65.50, TRUE, (SELECT id FROM restaurantes WHERE nombre = 'La Parrilla del Che')),
+    ('Ensalada mixta', 20.00, TRUE, (SELECT id FROM restaurantes WHERE nombre = 'La Parrilla del Che'));
