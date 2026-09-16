@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>La Carta · {% block titulo %}{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header class="cabecera">
+        <a class="marca" href="{{ url_for('listar_ordenes') }}">La Carta</a>
+        <nav>
+            <a href="{{ url_for('listar_ordenes') }}">Órdenes</a>
+        </nav>
+    </header>
+
+    <main class="contenedor">
+        {% with mensajes = get_flashed_messages(with_categories=true) %}
+            {% if mensajes %}
+                <ul class="flashes">
+                    {% for categoria, mensaje in mensajes %}
+                        <li class="flash flash-{{ categoria }}">{{ mensaje }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+
+        <h1>{{ self.titulo() }}</h1>
+
+        {% block contenido %}{% endblock %}
+    </main>
+</body>
+</html>

@@ -1,0 +1,67 @@
+{% extends "layout.html" %}
+
+{% block titulo %}Órdenes{% endblock %}
+
+{% block contenido %}
+    {% if ordenes %}
+        <p class="resumen">
+            Página {{ paginacion.page }} de {{ paginacion.pages }}
+            · {{ paginacion.total }} órdenes en total
+        </p>
+
+        <table class="tabla-ordenes">
+            <thead>
+                <tr>
+                    <th>Orden</th>
+                    <th>Cliente</th>
+                    <th>Estado</th>
+                    <th>Total</th>
+                    <th>Fecha</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for orden in ordenes %}
+                    <tr>
+                        <td class="id-corto" title="{{ orden.order_id }}">
+                            {{ orden.order_id|string|truncate(8, True, '') }}
+                        </td>
+                        <td>
+                            {% if orden.cliente %}
+                                {{ orden.cliente.nombre_completo }}
+                            {% else %}
+                                <em>Cliente eliminado</em>
+                            {% endif %}
+                        </td>
+                        <td><span class="estado estado-{{ orden.status }}">{{ orden.status }}</span></td>
+                        <td>
+                            {% if orden.total is not none %}
+                                ${{ '%.2f'|format(orden.total) }}
+                            {% else %}
+                                &mdash;
+                            {% endif %}
+                        </td>
+                        <td>{{ orden.creation_date.strftime('%d/%m/%Y %H:%M') }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <nav class="paginacion">
+            {% if paginacion.has_prev %}
+                <a href="{{ url_for('listar_ordenes', page=paginacion.prev_num) }}">&laquo; Anterior</a>
+            {% else %}
+                <span class="deshabilitado">&laquo; Anterior</span>
+            {% endif %}
+
+            <span>Página {{ paginacion.page }} / {{ paginacion.pages }}</span>
+
+            {% if paginacion.has_next %}
+                <a href="{{ url_for('listar_ordenes', page=paginacion.next_num) }}">Siguiente &raquo;</a>
+            {% else %}
+                <span class="deshabilitado">Siguiente &raquo;</span>
+            {% endif %}
+        </nav>
+    {% else %}
+        <p class="vacio">No hay órdenes registradas.</p>
+    {% endif %}
+{% endblock %}
