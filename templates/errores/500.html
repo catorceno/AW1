@@ -1,0 +1,9 @@
+{% extends 'layout.html' %}
+
+{% block titulo %}Error del servidor{% endblock %}
+
+{% block contenido %}
+    <h1>500 &middot; Error interno</h1>
+    <p>Ocurrió un problema procesando tu solicitud. Los cambios pendientes ya se revirtieron.</p>
+    <p><a href="{{ url_for('listar_restaurantes') }}">Volver al listado de restaurantes</a></p>
+{% endblock %}

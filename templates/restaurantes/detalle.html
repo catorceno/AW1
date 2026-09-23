@@ -1,0 +1,64 @@
+{% extends 'layout.html' %}
+
+{% block titulo %}{{ restaurante.nombre }} &middot; La Carta{% endblock %}
+
+{% block contenido %}
+    <p><a href="{{ url_for('listar_restaurantes') }}">&larr; Volver al listado</a></p>
+
+    <h1>{{ restaurante.nombre }}</h1>
+    <p class="detalle-info">
+        {{ restaurante.ciudad }}
+        {% if restaurante.direccion %} &middot; {{ restaurante.direccion }}{% endif %}
+        {% if restaurante.telefono %} &middot; {{ restaurante.telefono }}{% endif %}
+    </p>
+
+    <div class="acciones">
+        <a href="{{ url_for('editar_restaurante', restaurante_id=restaurante.id) }}" class="boton">Editar</a>
+        <form method="post"
+              action="{{ url_for('eliminar_restaurante', restaurante_id=restaurante.id) }}"
+              onsubmit="return confirm('¿Eliminar este restaurante y todos sus platos?');"
+              class="formulario-inline">
+            <button type="submit" class="boton boton-peligro">Eliminar</button>
+        </form>
+    </div>
+
+    <h2>Platos</h2>
+    {% if restaurante.platos %}
+        <table class="tabla">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Precio</th>
+                    <th>Disponible</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for plato in restaurante.platos %}
+                    <tr>
+                        <td>{{ plato.nombre }}</td>
+                        <td>${{ '%.2f'|format(plato.precio) }}</td>
+                        <td>{{ 'Sí' if plato.disponible else 'No' }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p class="vacio">Este restaurante todavía no tiene platos.</p>
+    {% endif %}
+
+    <h3>Agregar plato</h3>
+    <form method="post" action="{{ url_for('agregar_plato', restaurante_id=restaurante.id) }}" class="formulario">
+        <label for="nombre">Nombre</label>
+        <input type="text" id="nombre" name="nombre" required>
+
+        <label for="precio">Precio</label>
+        <input type="number" id="precio" name="precio" step="0.01" min="0.01" required>
+
+        <label class="etiqueta-checkbox">
+            <input type="checkbox" id="disponible" name="disponible" checked>
+            Disponible
+        </label>
+
+        <button type="submit">Agregar plato</button>
+    </form>
+{% endblock %}

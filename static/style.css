@@ -12,8 +12,15 @@
     box-sizing: border-box;
 }
 
+html {
+    height: 100%;
+}
+
 body {
     margin: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
     font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     color: var(--color-texto);
     background: var(--color-fondo);
@@ -47,7 +54,9 @@ body {
 }
 
 .contenedor {
+    flex: 1;
     max-width: 860px;
+    width: min(860px, calc(100% - 3rem));
     margin: 2rem auto;
     padding: 0 1.5rem;
 }
@@ -58,6 +67,7 @@ h1, h2, h3 {
 
 .tabla {
     width: 100%;
+    table-layout: fixed;
     border-collapse: collapse;
     margin: 1rem 0 2rem;
     background: white;
@@ -67,6 +77,24 @@ h1, h2, h3 {
     padding: 0.6rem 0.8rem;
     border-bottom: 1px solid var(--color-borde);
     text-align: left;
+    vertical-align: middle;
+}
+
+.tabla th:nth-child(1), .tabla td:nth-child(1) {
+    width: 40%;
+}
+
+.tabla th:nth-child(2), .tabla td:nth-child(2) {
+    width: 25%;
+}
+
+.tabla th:nth-child(3), .tabla td:nth-child(3) {
+    width: 20%;
+}
+
+.tabla th:nth-child(4), .tabla td:nth-child(4) {
+    width: 15%;
+    text-align: center;
 }
 
 .tabla th {

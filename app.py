@@ -1,6 +1,7 @@
 import os # ¿qué hace os? ¿para qué sirve os?
-from flask import Flask, jsonify, abort, request, render_template, redirect, url_for
+from flask import Flask, jsonify, abort, request, render_template, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
@@ -11,6 +12,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False # ¿qué hace esto?
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'cambia-esta-clave-en-produccion') # ¿qué hace esto?
 
 db = SQLAlchemy(app) # ¿qué es exactamente db?¿por qué todo se accede mediante este?
+migrate = Migrate(app, db)
 
 # MODELOS
 # --------------------------------------------------
@@ -71,15 +73,134 @@ def listar_restaurantes():
 # ¿parámetro de la función viene por el header? ¿o por la url? nunca entendí bien este punto
 @app.route('/restaurantes/<int:restaurante_id>', methods=['GET'])
 def detalle_restaurante(restaurante_id):
-    pass
+    restaurante = Restaurante.query.get_or_404(restaurante_id)
+    return render_template('restaurantes/detalle.html', restaurante=restaurante)
 
 @app.route('/restaurantes/crear', methods=['GET'])
 def formulario_crear_restaurante():
-    pass
+    return render_template('restaurantes/formulario.html', restaurante=None)
 
 @app.route('/restaurantes/crear', methods=['POST'])
 def crear_restaurante():
-    pass
+    nombre = request.form.get('nombre', '').strip()
+    ciudad = request.form.get('ciudad', '').strip()
+    direccion = request.form.get('direccion', '').strip() or None
+    telefono = request.form.get('telefono', '').strip() or None
+
+    if not nombre or not ciudad:
+        flash('Nombre y ciudad son obligatorios.', 'error')
+        return redirect(url_for('formulario_crear_restaurante'))
+
+    nuevo = Restaurante(nombre=nombre, ciudad=ciudad, direccion=direccion, telefono=telefono)
+
+    try:
+        db.session.add(nuevo)
+        db.session.commit()
+        flash(f'Restaurante "{nombre}" creado correctamente.', 'exito')
+    except Exception:
+        db.session.rollback()
+        flash('No se pudo crear el restaurante. Intenta de nuevo.', 'error')
+    finally:
+        db.session.close()
+
+    return redirect(url_for('listar_restaurantes'))
+
+@app.route('/restaurantes/<int:restaurante_id>/editar', methods=['GET', 'POST'])
+def editar_restaurante(restaurante_id):
+    """Requisito 6: formulario precargado; al guardar, actualiza y redirige al detalle."""
+    restaurante = Restaurante.query.get_or_404(restaurante_id)
+
+    if request.method == 'GET':
+        return render_template('restaurantes/formulario.html', restaurante=restaurante)
+
+    nombre = request.form.get('nombre', '').strip()
+    ciudad = request.form.get('ciudad', '').strip()
+    direccion = request.form.get('direccion', '').strip() or None
+    telefono = request.form.get('telefono', '').strip() or None
+
+    if not nombre or not ciudad:
+        flash('Nombre y ciudad son obligatorios.', 'error')
+        return redirect(url_for('editar_restaurante', restaurante_id=restaurante_id))
+
+    try:
+        restaurante.nombre = nombre
+        restaurante.ciudad = ciudad
+        restaurante.direccion = direccion
+        restaurante.telefono = telefono
+        db.session.commit()
+        flash('Restaurante actualizado correctamente.', 'exito')
+    except Exception:
+        db.session.rollback()
+        flash('No se pudo actualizar el restaurante.', 'error')
+    finally:
+        db.session.close()
+
+    return redirect(url_for('detalle_restaurante', restaurante_id=restaurante_id))
+
+
+@app.route('/restaurantes/<int:restaurante_id>/eliminar', methods=['POST'])
+def eliminar_restaurante(restaurante_id):
+    """Requisito 7: elimina el restaurante y sus platos en cascada. Solo POST."""
+    restaurante = Restaurante.query.get_or_404(restaurante_id)
+    nombre = restaurante.nombre
+
+    try:
+        db.session.delete(restaurante)
+        db.session.commit()
+        flash(f'Restaurante "{nombre}" eliminado.', 'exito')
+    except Exception:
+        db.session.rollback()
+        flash('No se pudo eliminar el restaurante.', 'error')
+    finally:
+        db.session.close()
+
+    return redirect(url_for('listar_restaurantes'))
+
+
+@app.route('/restaurantes/<int:restaurante_id>/platos', methods=['POST'])
+def agregar_plato(restaurante_id):
+    """Requisito 8: agrega un plato al restaurante desde el formulario del detalle."""
+    restaurante = Restaurante.query.get_or_404(restaurante_id)
+
+    nombre = request.form.get('nombre', '').strip()
+    precio_raw = request.form.get('precio', '').strip()
+    disponible = request.form.get('disponible') == 'on'
+
+    error = None
+    precio = None
+
+    if not nombre:
+        error = 'El nombre del plato es obligatorio.'
+    else:
+        try:
+            precio = float(precio_raw)
+            if precio <= 0:
+                error = 'El precio debe ser mayor que cero.'
+        except ValueError:
+            error = 'El precio debe ser un número válido.'
+
+    if error:
+        flash(error, 'error')
+        return redirect(url_for('detalle_restaurante', restaurante_id=restaurante_id))
+
+    nuevo_plato = Plato(
+        nombre=nombre,
+        precio=precio,
+        disponible=disponible,
+        restaurante_id=restaurante.id,
+    )
+
+    try:
+        db.session.add(nuevo_plato)
+        db.session.commit()
+        flash(f'Plato "{nombre}" agregado.', 'exito')
+    except Exception:
+        db.session.rollback()
+        flash('No se pudo agregar el plato.', 'error')
+    finally:
+        db.session.close()
+
+    return redirect(url_for('detalle_restaurante', restaurante_id=restaurante_id))
 
 @app.route('/', methods=['GET'])
 def raiz():

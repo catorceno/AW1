@@ -1,6 +1,8 @@
 services:
   db:
     image: postgres:16
+    ports:
+      - "5432:5432"
     environment:
       POSTGRES_DB: lacarta
       POSTGRES_USER: lacarta
@@ -16,6 +18,7 @@ services:
     ports:
       - "1028:1028"
     environment:
+      FLASK_APP: app.py
       DATABASE_URL: postgresql://lacarta:${POSTGRES_PASSWORD}@db:5432/lacarta
       SECRET_KEY: ${SECRET_KEY}
     depends_on:
