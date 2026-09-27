@@ -1,0 +1,36 @@
+{% extends 'layout.html' %}
+
+{% block titulo %}{{ 'Editar' if restaurante else 'Nuevo' }} restaurante &middot; La Carta{% endblock %}
+
+{% block contenido %}
+    <p>
+        <a href="{{ url_for('detalle_restaurante', restaurante_id=restaurante.id) if restaurante else url_for('listar_restaurantes') }}">
+            &larr; Volver
+        </a>
+    </p>
+
+    <h1>{{ 'Editar restaurante' if restaurante else 'Nuevo restaurante' }}</h1>
+
+    <form method="post"
+          action="{{ url_for('editar_restaurante', restaurante_id=restaurante.id) if restaurante else url_for('crear_restaurante') }}"
+          class="formulario">
+
+        <label for="nombre">Nombre</label>
+        <input type="text" id="nombre" name="nombre" required
+               value="{{ restaurante.nombre if restaurante else '' }}">
+
+        <label for="ciudad">Ciudad</label>
+        <input type="text" id="ciudad" name="ciudad" required
+               value="{{ restaurante.ciudad if restaurante else '' }}">
+
+        <label for="direccion">Dirección</label>
+        <input type="text" id="direccion" name="direccion"
+               value="{{ restaurante.direccion if restaurante else '' }}">
+
+        <label for="telefono">Teléfono</label>
+        <input type="text" id="telefono" name="telefono"
+               value="{{ restaurante.telefono if restaurante else '' }}">
+
+        <button type="submit">{{ 'Guardar cambios' if restaurante else 'Crear restaurante' }}</button>
+    </form>
+{% endblock %}
