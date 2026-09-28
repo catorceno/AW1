@@ -5,7 +5,7 @@ from flask_sqlalchemy import SQLAlchemy
 # flask se ubica en la carpeta de este archivo
 # al ejecutar desde terminal (ej: python app.py) __name__ es igual a __main__, de esta manera flask encuentra en el motor interno de Python la ruta absoluta donde se lanzó el archivo app.py
 app = Flask(__name__) 
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URI', 'postgresql://postgres:123@localhost:5432/lacarta') # connection string
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'postgresql://postgres:123@localhost:5432/lacarta') # connection string
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False # Desactiva un sistema que emite señales cada vez que un objeto cambia. False por convención porque consume memoria y rendimiento innecesariamente.
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'secret-key') # para cifrar y tener control de autenticación
 
@@ -138,7 +138,7 @@ def editar_restaurante(restaurante_id):
 
 @app.route('/restaurantes/<int:restaurante_id>/eliminar', methods=['POST'])
 def eliminar_restaurante(restaurante_id):
-    restaurante = Restaurante.qeury.get_or_404(restaurante_id)
+    restaurante = Restaurante.query.get_or_404(restaurante_id)
     nombre = restaurante.nombre
 
     try:
