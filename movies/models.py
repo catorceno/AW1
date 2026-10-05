@@ -1,6 +1,7 @@
 import uuid
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.utils.translation import gettext_lazy as _
 
 class TimeStampedMixin(models.Model):
   # auto_now_add establecerá automáticamente la fecha de creación del registro
@@ -64,7 +65,7 @@ class FilmWork(UUIDMixin, TimeStampedMixin):
   persons = models.ManyToManyField(Person, through='PersonFilmWork')
 
   certificate = models.CharField(_('certificate'), max_length=512, blank=True)
-  
+
   # El parámetro upload_to indica en qué subcarpeta se almacenarán los archivos subi
   # La carpeta base se indica en el archivo de configuración como MEDIA_ROOT
   file_path = models.FileField(_('file'), blank=True, null=True, upload_to='movies/')
