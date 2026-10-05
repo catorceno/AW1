@@ -12,7 +12,7 @@ services:
       interval: 5s
       retries: 10
   web:
-    build: .
+    build: ./flask
     ports:
       - "8000:8000"
     environment:
