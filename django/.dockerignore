@@ -1,4 +1,10 @@
+.git
+*.pem
+*.ppk
+*.key
+
 .venv/
 venv/
 .env
 __pycache__/
+*.pyc
