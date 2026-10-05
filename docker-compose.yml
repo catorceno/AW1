@@ -1,11 +1,9 @@
 services:
   db:
     image: postgres:16
-    ports:
-      - "5432:5432"
     environment:
       POSTGRES_DB: lacarta
-      POSTGRES_USER: app
+      POSTGRES_USER: lacarta
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - datos_pg:/var/lib/postgresql/data
@@ -18,8 +16,7 @@ services:
     ports:
       - "8000:8000"
     environment:
-      FLASK_APP: app.py
-      DATABASE_URL: postgresql+psycopg2://lacarta:${POSTGRES_PASSWORD}@db:5432/lacarta
+      DATABASE_URL: postgresql://lacarta:${POSTGRES_PASSWORD}@db:5432/lacarta
       SECRET_KEY: ${SECRET_KEY}
     depends_on:
       db:
