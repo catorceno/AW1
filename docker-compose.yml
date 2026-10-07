@@ -11,10 +11,11 @@ services:
       test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
       interval: 5s
       retries: 10
+  
   web:
     build: ./flask
-    ports:
-      - "8000:8000"
+    expose:
+      - "8000"
     environment:
       DATABASE_URL: postgresql+psycopg://${DB_USER}:${DB_PASSWORD}@db:5432/${DB_NAME}
       SECRET_KEY: ${SECRET_KEY:?Define SECRET_KEY en .env}
@@ -24,8 +25,10 @@ services:
 
   django:
     build: ./django
-    ports:
-      - "8001:8000"
+    expose:
+      - "8000"
+    volumes:
+      - django_static:/app/staticfiles
     environment:
       DB_NAME: ${DB_NAME}
       DB_USER: ${DB_USER}
@@ -43,5 +46,19 @@ services:
       db:
         condition: service_healthy
 
+  nginx:
+    image: nginx:1.25.3
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./configs:/etc/nginx/conf.d:ro
+      - ./flask/static:/data/flask-static:ro
+      - django_static:/data/django-static:ro
+    depends_on:
+      - web
+      - django
+
 volumes:
   datos_pg:
+  django_static:

@@ -213,15 +213,15 @@ def error_servidor(error):
     db.session.rollback()
     return render_template('errores/500.html'), 500
 
+# with: activa Context Manager, equivale a un try/finally PENDIENTE
+# en peticiones web se activa el context automáticamente, aquí no se está haciendo ninguna petición entonces se debe activar de manera manual
+with app.app_context():
+    db.create_all() # crea todas las tablas
+    db.engine.dispose()
+
 # __variable__: dunder (double underscore) para atributos especiales de configuración interna
 # al ejecutar desde terminal (ej: python app.py), Python asigna __main__ a su variable __name__
 # la condicional sirve para que el main no se ejecute si el archivo es utilizado mediante un import en otro lado
 if __name__ == '__main__':
-
-    # with: activa Context Manager, equivale a un try/finally PENDIENTE
-    # en peticiones web se activa el context automáticamente, aquí no se está haciendo ninguna petición entonces se debe activar de manera manual
-    with app.app_context():
-        db.create_all() # crea todas las tablas
-
     puerto = int(os.environ.get('PORT', 8000))
     app.run(host='0.0.0.0', port=puerto, debug=False)
