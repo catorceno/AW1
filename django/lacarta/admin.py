@@ -1,7 +1,6 @@
 from django.contrib import admin
 from .models import Restaurante, Plato
 
-
 class PlatoInline(admin.TabularInline):
     model = Plato
     extra = 1
@@ -10,7 +9,7 @@ class PlatoInline(admin.TabularInline):
 @admin.register(Restaurante)
 class RestauranteAdmin(admin.ModelAdmin):
     inlines = (PlatoInline,)
-    list_display = ('nombre', 'ciudad', 'telefono', 'created')
+    list_display = ('nombre', 'ciudad', 'telefono')
     list_filter = ('ciudad',)
     search_fields = ('nombre', 'direccion')
 
